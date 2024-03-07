@@ -19,7 +19,7 @@ jobs:
 
       - name: Package Helm Chart
         run: |
-          helm package ./hope-core --version ${{ github.ref_name }} --app-version ${{ github.ref_name }}
+          helm package ./ --version ${{ github.ref_name }} --app-version ${{ github.ref_name }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
