@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "core.fullname" . }}-backend-release
+  labels:
+    {{- include "core.labels" . | nindent 4 }}
+    core/job: upgrade
+  annotations:
+    "helm.sh/hook": pre-upgrade, post-install
+    "helm.sh/hook-weight": "5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "core.labels" . | nindent 8 }}
+        core/job: upgrade
+    spec:
+      {{- with .Values.backend.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-backend-release
+          command: ["/bin/sh"]
+          args: ["-c", {{ .Values.backend.job.postInstall.command | quote }}]
+          securityContext:
+            {{- toYaml .Values.backend.securityContext | nindent 12 }}
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.backend.imagePullPolicy }}
+          envFrom:
+          - secretRef:
+              name: {{ include "core.fullname" . }}-backend
+          - configMapRef:
+              name: {{ include "core.fullname" . }}-backend
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}
+      restartPolicy: Never
+  backoffLimit: 3
+---

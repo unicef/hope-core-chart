@@ -2,36 +2,66 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
-
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
-
-imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Automatically mount a ServiceAccount's API credentials?
-  automount: true
-  # Annotations to add to the service account
+ingress:
+  enabled: false
+  className: ""
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  hosts:
+  - host: chart-example.local
+    paths:
+    - path: /
+      pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
-podAnnotations: {}
-podLabels: {}
+backend:
+  job:
+    postInstall:
+      # TODO: wait for fix for upgrade command in empty db
+      # command: python3 manage.py upgrade
+      command: python3 manage.py migratealldb
 
-podSecurityContext: {}
+  secret:
+    SECRET_KEY: change-me
+
+  config:
+    DJANGO_ALLOWED_HOSTS: "kubernetes.internal"
+
+  replicaCount: 1
+
+  image:
+    repository: unicef/hope
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+
+  imagePullSecrets: []
+
+  podAnnotations: {}
+  podLabels: {}
+
+  podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext: {}
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  service:
+    type: ClusterIP
+    port: 8000
+
+  securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -39,27 +69,7 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-service:
-  type: ClusterIP
-  port: 80
-
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-resources: {}
+  resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -71,37 +81,93 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
-readinessProbe:
-  httpGet:
-    path: /
-    port: http
+  livenessProbe:
+    timeoutSeconds: 30
+    httpGet:
+      path: /api/_health
+      port: 8000
+      httpHeaders:
+      - name: X-Health
+        value: "Kubernetes-Health"
+      - name: Host
+        value: "kubernetes.internal"
 
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  readinessProbe:
+    timeoutSeconds: 30
+    httpGet:
+      path: /api/_health
+      port: 8000
+      httpHeaders:
+      - name: X-Health
+        value: "Kubernetes-Health"
+      - name: Host
+        value: "kubernetes.internal"
 
-# Additional volumes on the output Deployment definition.
-volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
 
-# Additional volumeMounts on the output Deployment definition.
-volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
+  # Additional volumes on the output Deployment definition.
+  volumes: []
+  # - name: foo
+  #   secret:
+  #     secretName: mysecret
+  #     optional: false
 
-nodeSelector: {}
+  # Additional volumeMounts on the output Deployment definition.
+  volumeMounts: []
+  # - name: foo
+  #   mountPath: "/etc/foo"
+  #   readOnly: true
 
-tolerations: []
+  nodeSelector: {}
 
-affinity: {}
+  tolerations: []
+
+  affinity: {}
+
+
+postgresql:
+  enabled: true
+  auth:
+    username: hopeuser
+    password: change-me-please
+    enablePostgresUser: true
+    postgresPassword: really-change-me
+  primary:
+    initdb:
+      user: postgres
+      password: really-change-me
+      scripts:
+        init.sql: |
+          CREATE DATABASE hopedb;
+          GRANT ALL PRIVILEGES ON DATABASE hopedb TO hopeuser;
+          \c hopedb;
+          CREATE EXTENSION IF NOT EXISTS postgis;
+          GRANT ALL ON SCHEMA public TO hopeuser;
+          ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO hopeuser;
+
+          CREATE DATABASE cash_assist_datahub_mis;
+          GRANT ALL PRIVILEGES ON DATABASE cash_assist_datahub_mis TO hopeuser;
+          \c cash_assist_datahub_mis;
+          CREATE EXTENSION IF NOT EXISTS postgis;
+          GRANT ALL ON SCHEMA public TO hopeuser;
+          ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO hopeuser;
+
+          CREATE DATABASE cash_assist_datahub_ca;
+          GRANT ALL PRIVILEGES ON DATABASE cash_assist_datahub_ca TO hopeuser;
+          \c cash_assist_datahub_ca;
+          CREATE EXTENSION IF NOT EXISTS postgis;
+          GRANT ALL ON SCHEMA public TO hopeuser;
+          ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO hopeuser;
+
+          CREATE DATABASE cash_assist_datahub_erp;
+          GRANT ALL PRIVILEGES ON DATABASE cash_assist_datahub_erp TO hopeuser;
+          \c cash_assist_datahub_erp;
+          CREATE EXTENSION IF NOT EXISTS postgis;
+          GRANT ALL ON SCHEMA public TO hopeuser;
+          ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO hopeuser;
+
+          CREATE DATABASE registration_datahub;
+          GRANT ALL PRIVILEGES ON DATABASE registration_datahub TO hopeuser;
+          \c registration_datahub;
+          CREATE EXTENSION IF NOT EXISTS postgis;
+          GRANT ALL ON SCHEMA public TO hopeuser;
+          ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO hopeuser;
