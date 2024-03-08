@@ -7,9 +7,13 @@ metadata:
 spec:
   type: {{ .Values.backend.service.type }}
   ports:
-    - port: {{ .Values.backend.service.port }}
+    - name: http
+      {{- if .Values.nginx.enabled }}
+      port: {{ .Values.nginx.service.port }}
+      {{- else }}
+      port: {{ .Values.backend.service.port }}
+      {{- end }}
       targetPort: http
       protocol: TCP
-      name: http
   selector:
     {{- include "core.selectorLabels" . | nindent 4 }}

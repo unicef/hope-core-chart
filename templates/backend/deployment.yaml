@@ -29,8 +29,48 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.backend.podSecurityContext | nindent 8 }}
+      {{- if .Values.nginx.enabled }}
+      initContainers:
+        - name: statics
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          args:
+            - /bin/sh
+            - -c
+            - |
+              python3 manage.py collectstatic --noinput
+          volumeMounts:
+            - name: statics
+              mountPath: /data/staticserve
+          envFrom:
+          # TODO: if azure keyvault is enabled, add the secretRef here and remove the secretRef
+          - secretRef:
+              name: {{ include "core.fullname" . }}-backend
+          - configMapRef:
+              name: {{ include "core.fullname" . }}-backend
+      {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
+        {{- if .Values.nginx.enabled }}
+        - name: nginx
+          image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
+          imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+          env:
+            - name: UPSTREAMS
+              value: "/:localhost:{{ .Values.backend.service.port }}"
+            - name: STATICS
+              value: "/api/static:/data/staticserve"
+            - name: NGINX_PORT
+              value: "{{ .Values.nginx.service.port }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.nginx.service.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: statics
+              mountPath: /data/staticserve
+              readOnly: true
+        {{- end }}
+        - name: backend
           securityContext:
             {{- toYaml .Values.backend.securityContext | nindent 12 }}
           image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Chart.AppVersion }}"
@@ -51,15 +91,18 @@ spec:
             {{- toYaml .Values.backend.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.backend.resources | nindent 12 }}
-          {{- with .Values.backend.volumeMounts }}
+          {{- if .Values.nginx.enabled }}
           volumeMounts:
-            {{- toYaml . | nindent 12 }}
+            - name: statics
+              mountPath: /data/staticserve
+              readOnly: true
           {{- end }}
-      {{- with .Values.backend.volumes }}
+      {{- if .Values.nginx.enabled }}
       volumes:
-        {{- toYaml . | nindent 8 }}
+        - name: statics
+          emptyDir: {}
       {{- end }}
-      {{- with .Values.backend.nodeSelector }}
+      {{ with .Values.backend.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
