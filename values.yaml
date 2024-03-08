@@ -22,6 +22,12 @@ ingress:
   #      - chart-example.local
 
 backend:
+  admin:
+    create: true
+    username: admin
+    password: change-me-pretty-please
+    email: admin@hope.local
+
   job:
     postInstall:
       # TODO: wait for fix for upgrade command in empty db
@@ -32,7 +38,8 @@ backend:
     SECRET_KEY: change-me
 
   config:
-    DJANGO_ALLOWED_HOSTS: "kubernetes.internal"
+    # for healthchecks and test command
+    DJANGO_ALLOWED_HOSTS: "kubernetes.internal,hope-core,"
 
   replicaCount: 1
 
@@ -171,3 +178,11 @@ postgresql:
           CREATE EXTENSION IF NOT EXISTS postgis;
           GRANT ALL ON SCHEMA public TO hopeuser;
           ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO hopeuser;
+
+redis:
+  enabled: true
+
+  architecture: standalone
+  
+  auth:
+    enabled: false

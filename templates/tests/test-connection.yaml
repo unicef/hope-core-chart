@@ -13,7 +13,7 @@ spec:
       command: ['curl']
       args: [
         '--fail',
-        '-H Host: {{ .Values.backend.service.host }}',
+        '-H Host: kubernetes.internal',
         '{{ include "core.fullname" . }}:{{ .Values.backend.service.port }}/api/_health',  
       ]
   restartPolicy: Never

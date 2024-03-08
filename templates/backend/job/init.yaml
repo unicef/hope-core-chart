@@ -1,0 +1,45 @@
+{{- if .Values.backend.admin.create -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "core.fullname" . }}-backend-init
+  labels:
+    {{- include "core.labels" . | nindent 4 }}
+    core/job: upgrade
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "core.labels" . | nindent 8 }}
+        core/job: upgrade
+    spec:
+      {{- with .Values.backend.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-backend-init
+          command: ["python", "manage.py", "createsuperuser", "--no-input", "--email", "{{ .Values.backend.admin.email }}"]
+          env:
+          - name: DJANGO_SUPERUSER_USERNAME
+            value: {{ .Values.backend.admin.username | quote }}
+          - name: DJANGO_SUPERUSER_PASSWORD
+            value: {{ .Values.backend.admin.password | quote }}
+          securityContext:
+            {{- toYaml .Values.backend.securityContext | nindent 12 }}
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.backend.imagePullPolicy }}
+          envFrom:
+          - secretRef:
+              name: {{ include "core.fullname" . }}-backend
+          - configMapRef:
+              name: {{ include "core.fullname" . }}-backend
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}
+      restartPolicy: Never
+  backoffLimit: 3
+{{- end -}}
