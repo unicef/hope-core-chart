@@ -1,0 +1,23 @@
+apiVersion: v1
+entries:
+  core:
+  - apiVersion: v2
+    appVersion: "2.1"
+    created: "2024-03-08T21:35:46.221419+01:00"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 14.x.x
+    - condition: redis.enabled
+      name: redis
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 18.x.x
+    description: A Helm chart for Kubernetes
+    digest: 9b0ed1c188b106d670b52fdb4b088f3bf09af089da307a86003f514cd9af137c
+    name: core
+    type: application
+    urls:
+    - https://unicef.github.io/hope-core-chart/core-0.0.3.tgz
+    version: 0.0.3
+generated: "2024-03-08T21:35:46.211938+01:00"
