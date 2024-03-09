@@ -214,15 +214,12 @@ redis:
 
 elasticsearch:
   enabled: true
-
   master:
+    masterOnly: false
     replicaCount: 1
-
   data:
-    replicaCount: 1
-
+    replicaCount: 0
   coordinating:
-    replicaCount: 1
-
+    replicaCount: 0
   ingest:
-    replicaCount: 1
+    replicaCount: 0
