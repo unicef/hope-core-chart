@@ -34,7 +34,7 @@ spec:
       {{- if .Values.nginx.enabled }}
       initContainers:
         - name: statics
-          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Chart.AppVersion }}"
+          image: "{{ include "core.backend.image" . }}"
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           args:
             - /bin/sh
@@ -75,14 +75,10 @@ spec:
         - name: backend
           securityContext:
             {{- toYaml .Values.backend.securityContext | nindent 12 }}
-          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Chart.AppVersion }}"
+          image: "{{ include "core.backend.image" . }}"
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           envFrom:
-          # TODO: if azure keyvault is enabled, add the secretRef here and remove the secretRef
-          - secretRef:
-              name: {{ include "core.fullname" . }}-backend
-          - configMapRef:
-              name: {{ include "core.fullname" . }}-backend
+          {{- include "core.backend.envConfig" . | nindent 10 }}
           ports:
             - name: http
               containerPort: {{ .Values.backend.service.port }}

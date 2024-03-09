@@ -49,3 +49,21 @@ Selector labels
 app.kubernetes.io/name: {{ include "core.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Common backend environment configuration
+*/}}
+{{- define "core.backend.envConfig" -}}
+envFrom:
+- secretRef:
+    name: {{ include "core.fullname" . }}-backend
+- configMapRef:
+    name: {{ include "core.fullname" . }}-backend
+{{- end }}
+
+{{/*
+Full image name for the core app
+*/}}
+{{- define "core.backend.image" -}}
+{{- printf "%s:%s" .Values.backend.image.repository .Values.backend.image.tag | default .Chart.AppVersion }}
+{{- end }}
