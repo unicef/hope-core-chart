@@ -5,6 +5,12 @@
 nameOverride: ""
 fullnameOverride: ""
 
+serviceAccount:
+  create: true
+  name: core
+  annotations: {}
+
+
 nginx:
   enabled: true
 

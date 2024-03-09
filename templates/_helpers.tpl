@@ -67,3 +67,14 @@ Full image name for the core app
 {{- define "core.backend.image" -}}
 {{- printf "%s:%s" .Values.backend.image.repository .Values.backend.image.tag | default .Chart.AppVersion }}
 {{- end }}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "core.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "core.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}

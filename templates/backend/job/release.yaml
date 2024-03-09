@@ -16,6 +16,7 @@ spec:
         {{- include "core.labels" . | nindent 8 }}
         core/job: upgrade
     spec:
+      serviceAccountName: {{ include "core.serviceAccountName" . }}
       {{- with .Values.backend.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
