@@ -17,7 +17,7 @@ spec:
         core/job: upgrade
     spec:
       serviceAccountName: {{ include "core.serviceAccountName" . }}
-      {{- with .Values.backend.imagePullSecrets }}
+      {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -28,7 +28,7 @@ spec:
           securityContext:
             {{- toYaml .Values.backend.securityContext | nindent 12 }}
           image: "{{ include "core.backend.image" . }}"
-          imagePullPolicy: {{ .Values.backend.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
           {{- include "core.backend.envConfig" . | nindent 10 }}
           resources:
             {{- toYaml .Values.backend.resources | nindent 12 }}

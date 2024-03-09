@@ -25,7 +25,7 @@ spec:
         {{- end }}
         core/service: backend
     spec:
-      {{- with .Values.backend.imagePullSecrets }}
+      {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -36,7 +36,7 @@ spec:
       initContainers:
         - name: statics
           image: "{{ include "core.backend.image" . }}"
-          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
           args:
             - /bin/sh
             - -c
@@ -51,7 +51,7 @@ spec:
         {{- if .Values.nginx.enabled }}
         - name: nginx
           image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
-          imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
           env:
             - name: UPSTREAMS
               value: "/:localhost:{{ .Values.backend.service.port }}"

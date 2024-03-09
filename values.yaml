@@ -10,13 +10,14 @@ serviceAccount:
   name: core
   annotations: {}
 
+global:
+  imagePullPolicy: IfNotPresent
 
 nginx:
   enabled: true
 
   image:
     repository: tivix/docker-nginx
-    pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: v17
 
@@ -24,6 +25,12 @@ nginx:
     type: ClusterIP
     port: 80
 
+celery:
+  podAnnotations: {}
+
+  replicaCount: 1
+  autoscaling:
+    enabled: true
 
 ingress:
   enabled: false
@@ -77,7 +84,6 @@ backend:
 
   image:
     repository: unicef/hope
-    pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     # TODO: until we have a nice versioning and releases, let's use something that works
     tag: core-6e54d5b86e70e10d9229d0e1f065fe024a69df45-dist
