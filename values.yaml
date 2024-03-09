@@ -54,7 +54,18 @@ backend:
   config:
     # for healthchecks, test command and local forwarding
     DJANGO_ALLOWED_HOSTS: "kubernetes.internal,hope-core,localhost,"
-    # TODO: missing settings for CSP - allow in app to configure that via env
+
+    CSP_REPORT_ONLY: "true"
+    CSP_REPORT_PERCENTAGE: "0.1"
+    CSP_DEFAULT_SRC: "'self'"
+    CSP_FRAME_ANCESTORS: "'none'"
+    CSP_STYLE_SRC: "'self','unsafe-inline','unsafe-eval',fonts.googleapis.com,cdn.jsdelivr.net,cdnjs.cloudflare.com,maxcdn.bootstrapcdn.com,unpkg.com"
+    CSP_MANIFEST_SRC: "'self'"
+    CSP_SCRIPT_SRC: "'self','unsafe-inline','unsafe-eval',js-agent.newrelic.com,cdn.jsdelivr.net,cdnjs.cloudflare.com,unpkg.com"
+    CSP_IMG_SRC: "'self',data:,cdn.datatables.net,map1a.vis.earthdata.nasa.gov,map1b.vis.earthdata.nasa.gov,map1c.vis.earthdata.nasa.gov"
+    CSP_FONT_SRC: "'self',data:,fonts.gstatic.com,maxcdn.bootstrapcdn.com"
+    CSP_MEDIA_SRC: "'self'"
+    CSP_CONNECT_SRC: "sentry.io,gov-bam.nr-data.net,cdn.jsdelivr.net"
 
   replicaCount: 2
 
@@ -62,7 +73,8 @@ backend:
     repository: unicef/hope
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
+    # TODO: until we have a nice versioning and releases, let's use something that works
+    tag: core-6e54d5b86e70e10d9229d0e1f065fe024a69df45-dist
 
   imagePullSecrets: []
 
