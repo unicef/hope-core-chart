@@ -45,12 +45,7 @@ spec:
           volumeMounts:
             - name: statics
               mountPath: /data/staticserve
-          envFrom:
-          # TODO: if azure keyvault is enabled, add the secretRef here and remove the secretRef
-          - secretRef:
-              name: {{ include "core.fullname" . }}-backend
-          - configMapRef:
-              name: {{ include "core.fullname" . }}-backend
+          {{- include "core.backend.envConfig" . | nindent 10 }}
       {{- end }}
       containers:
         {{- if .Values.nginx.enabled }}
