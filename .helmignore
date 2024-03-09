@@ -21,3 +21,6 @@
 .idea/
 *.tmproj
 .vscode/
+
+# don't include tgz files in docs
+docs/
