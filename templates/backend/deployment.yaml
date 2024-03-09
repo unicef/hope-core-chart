@@ -11,6 +11,7 @@ spec:
   selector:
     matchLabels:
       {{- include "core.selectorLabels" . | nindent 6 }}
+      core/service: backend
   template:
     metadata:
       {{- with .Values.backend.podAnnotations }}
@@ -22,6 +23,7 @@ spec:
         {{- with .Values.backend.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        core/service: backend
     spec:
       {{- with .Values.backend.imagePullSecrets }}
       imagePullSecrets:
