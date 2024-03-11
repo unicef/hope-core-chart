@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "core.fullname" . }}
+  name: {{ include "core.fullname" . }}-backend
   labels:
     {{- include "core.labels" . | nindent 4 }}
 spec:
