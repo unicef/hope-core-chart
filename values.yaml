@@ -32,6 +32,26 @@ celery:
   autoscaling:
     enabled: true
 
+flower:
+  image: saxix/flower:1.6
+  replicaCount: 1
+  podAnnotations: {}
+  podSecurityContext: {}
+
+  securityContext: {}
+
+  tolerations: []
+  affinity: {}
+  service:
+    type: ClusterIP
+    port: 8000
+
+  # config:
+  #   FLOWER_URL_PREFIX: flower
+
+  secret:
+    FLOWER_BASIC_AUTH: "change:me"
+
 ingress:
   enabled: false
   className: ""
@@ -65,9 +85,6 @@ backend:
     SECRET_KEY: change-me
 
   config:
-    # for healthchecks, test command and local forwarding
-    DJANGO_ALLOWED_HOSTS: "kubernetes.internal,hope-core,localhost,"
-
     CSP_REPORT_ONLY: "true"
     CSP_REPORT_PERCENTAGE: "0.1"
     CSP_DEFAULT_SRC: "'self'"

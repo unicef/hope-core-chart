@@ -5,6 +5,9 @@ metadata:
   labels:
     {{- include "core.labels" . | nindent 4 }}
 data:
+  # for healthchecks, test command and local forwarding
+  DJANGO_ALLOWED_HOSTS: "kubernetes.internal,hope-core,localhost,{{ .Values.ingress.host }},"
+  DOMAIN: "{{ .Values.ingress.host }}"
 {{- range $key, $value :=  .Values.backend.config }}
   {{- if eq $value "" }}
   {{- else }}
