@@ -13,8 +13,8 @@ spec:
   template:
     metadata:
       annotations:
-    {{- if .Values.backend.podAnnotations }}
-        {{- toYaml .Values.backend.podAnnotations | nindent 8 }}
+    {{- if .Values.flower.podAnnotations }}
+        {{- toYaml .Values.flower.podAnnotations | nindent 8 }}
     {{- end }}
       labels:
         {{- include "core.selectorLabels" . | nindent 8 }}
