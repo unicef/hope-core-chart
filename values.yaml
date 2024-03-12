@@ -78,8 +78,7 @@ backend:
   job:
     postInstall:
       # TODO: wait for fix for upgrade command in empty db
-      # command: python3 manage.py upgrade
-      command: python3 manage.py migratealldb
+      command: python3 manage.py upgrade
 
   secret:
     SECRET_KEY: change-me
@@ -103,7 +102,7 @@ backend:
     repository: unicef/hope
     # Overrides the image tag whose default is the chart appVersion.
     # TODO: until we have a nice versioning and releases, let's use something that works
-    tag: core-6e54d5b86e70e10d9229d0e1f065fe024a69df45-dist
+    tag: core-554f42005e0f2dd67882915199842db737b75946-dist
 
   imagePullSecrets: []
 
@@ -240,3 +239,8 @@ elasticsearch:
     replicaCount: 0
   ingest:
     replicaCount: 0
+
+keyvault:
+  enabled: false
+  envMappings: []
+  mountPath: /mnt/secrets

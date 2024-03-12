@@ -85,16 +85,29 @@ spec:
             {{- toYaml .Values.backend.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.backend.resources | nindent 12 }}
-          {{- if .Values.nginx.enabled }}
           volumeMounts:
+          {{- if .Values.nginx.enabled }}
             - name: statics
               mountPath: /data/staticserve
               readOnly: true
           {{- end }}
-      {{- if .Values.nginx.enabled }}
+          {{- if .Values.keyvault.enabled }}
+          - name: {{ include "core.fullname" . }}-keyvault
+            mountPath: {{ .Values.keyvault.mountPath }}
+            readOnly: true
+          {{- end }}
       volumes:
+      {{- if .Values.nginx.enabled }}
         - name: statics
           emptyDir: {}
+      {{- end }}
+      {{- if .Values.keyvault.enabled }}
+      - name: {{ include "core.fullname" . }}-keyvault
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: {{ include "core.fullname" . }}-secret-provider
       {{- end }}
       {{ with .Values.backend.nodeSelector }}
       nodeSelector:

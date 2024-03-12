@@ -59,6 +59,10 @@ envFrom:
     name: {{ include "core.fullname" . }}-backend
 - configMapRef:
     name: {{ include "core.fullname" . }}-backend
+{{- if .Values.keyvault.enabled }}
+- secretRef:
+    name: {{ include "core.fullname" . }}-keyvault
+{{- end }}
 {{- end }}
 
 {{/*
