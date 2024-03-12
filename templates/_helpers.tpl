@@ -54,7 +54,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Common backend environment configuration
 */}}
 {{- define "core.backend.envConfig" -}}
-envFrom:
 - secretRef:
     name: {{ include "core.fullname" . }}-backend
 - configMapRef:

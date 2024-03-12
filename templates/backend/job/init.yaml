@@ -34,6 +34,7 @@ spec:
             {{- toYaml .Values.backend.securityContext | nindent 12 }}
           image: "{{ include "core.backend.image" . }}"
           imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          envFrom:
           {{- include "core.backend.envConfig" . | nindent 10 }}
           resources:
             {{- toYaml .Values.backend.resources | nindent 12 }}

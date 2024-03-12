@@ -10,5 +10,4 @@ To install the chart, you can use the following command:
 helm install hope-core https://unicef.github.io/hope-core-chart -f values.yaml --timeout 10m0s
 ```
 
-Timeout is set to 10m because 5m (default) is not enough in a default setup - tested on MBP with M2 chip, in Minikube.
-
+Timeout is set to 10m because 5m (default) is not enough in a default setup - tested in AKS cluster.

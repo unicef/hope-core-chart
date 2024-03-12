@@ -45,6 +45,7 @@ spec:
           volumeMounts:
             - name: statics
               mountPath: /data/staticserve
+          envFrom:
           {{- include "core.backend.envConfig" . | nindent 10 }}
       {{- end }}
       containers:
