@@ -3,7 +3,30 @@ entries:
   core:
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-03-12T11:10:47.550436+01:00"
+    created: "2024-03-12T14:39:42.265874+01:00"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 14.x.x
+    - condition: redis.enabled
+      name: redis
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 18.x.x
+    - condition: elasticsearch.enabled
+      name: elasticsearch
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 19.x.x
+    description: A Helm chart for Kubernetes
+    digest: 2e4e86548fbbb0c0d63b871e25f6f76b1c5e32aac992cb9559f151477c54b28b
+    name: core
+    type: application
+    urls:
+    - https://unicef.github.io/hope-core-chart/core-0.0.7.tgz
+    version: 0.0.7
+  - apiVersion: v2
+    appVersion: "2.1"
+    created: "2024-03-12T14:39:42.254688+01:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -26,7 +49,7 @@ entries:
     version: 0.0.6
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-03-12T11:10:47.539567+01:00"
+    created: "2024-03-12T14:39:42.242707+01:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -49,7 +72,7 @@ entries:
     version: 0.0.5
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-03-12T11:10:47.525506+01:00"
+    created: "2024-03-12T14:39:42.228989+01:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -72,7 +95,7 @@ entries:
     version: 0.0.4
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-03-12T11:10:47.512813+01:00"
+    created: "2024-03-12T14:39:42.216067+01:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -89,4 +112,4 @@ entries:
     urls:
     - https://unicef.github.io/hope-core-chart/core-0.0.3.tgz
     version: 0.0.3
-generated: "2024-03-12T11:10:47.505296+01:00"
+generated: "2024-03-12T14:39:42.208245+01:00"
