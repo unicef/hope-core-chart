@@ -12,6 +12,7 @@ serviceAccount:
 
 global:
   imagePullPolicy: IfNotPresent
+  imagePullSecrets: []
 
 nginx:
   enabled: true
@@ -99,12 +100,11 @@ backend:
   replicaCount: 2
 
   image:
-    repository: unicef/hope
-    # Overrides the image tag whose default is the chart appVersion.
-    # TODO: until we have a nice versioning and releases, let's use something that works
-    tag: core-554f42005e0f2dd67882915199842db737b75946-dist
-
-  imagePullSecrets: []
+    # TODO: should be unicef/hope finally
+    #       but until we have a nice versioning and releases
+    #       let's use something that works
+    repository: unicef/hope-support-images
+    tag: core-dd7935513c45cb20072a4d983b550295be473199
 
   podAnnotations: {}
   podLabels: {}
