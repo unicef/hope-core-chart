@@ -24,7 +24,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-backend-release
           command: ["/bin/sh"]
-          args: ["-c", {{ .Values.backend.job.postInstall.command | quote }}]
+          args: ["-c", {{ .Values.backend.job.preUpgrade.command | quote }}]
           securityContext:
             {{- toYaml .Values.backend.securityContext | nindent 12 }}
           image: "{{ include "core.backend.image" . }}"

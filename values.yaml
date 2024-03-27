@@ -77,8 +77,7 @@ backend:
     email: admin@hope.local
 
   job:
-    postInstall:
-      # TODO: wait for fix for upgrade command in empty db
+    preUpgrade:
       command: python3 manage.py upgrade
 
   secret:
