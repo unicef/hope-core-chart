@@ -103,7 +103,7 @@ backend:
     #       but until we have a nice versioning and releases
     #       let's use something that works
     repository: unicef/hope-support-images
-    tag: core-dd7935513c45cb20072a4d983b550295be473199
+    tag: core-2bc1312a7785f99d1cfe910052a75d086516e578
 
   podAnnotations: {}
   podLabels: {}
@@ -238,6 +238,8 @@ elasticsearch:
     replicaCount: 0
   ingest:
     replicaCount: 0
+
+  plugins: "analysis-phonetic,analysis-icu"
 
 keyvault:
   enabled: false
