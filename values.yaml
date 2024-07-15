@@ -20,7 +20,7 @@ nginx:
   image:
     repository: tivix/docker-nginx
     # Overrides the image tag whose default is the chart appVersion.
-    tag: v17
+    tag: v18
 
   service:
     type: ClusterIP
@@ -99,11 +99,8 @@ backend:
   replicaCount: 2
 
   image:
-    # TODO: should be unicef/hope finally
-    #       but until we have a nice versioning and releases
-    #       let's use something that works
-    repository: unicef/hope-support-images
-    tag: core-2bc1312a7785f99d1cfe910052a75d086516e578
+    repository: unicef/hope
+    tag: core-2.7.0
 
   podAnnotations: {}
   podLabels: {}
@@ -230,15 +227,13 @@ redis:
 elasticsearch:
   enabled: true
   master:
-    masterOnly: false
-    replicaCount: 1
+    replicas: 1
   data:
-    replicaCount: 0
+    replicas: 1
   coordinating:
-    replicaCount: 0
-  ingest:
-    replicaCount: 0
-
+    replicas: 1
+  sysctlImage:
+    replicas: 1
   plugins: "analysis-phonetic,analysis-icu"
 
 keyvault:
