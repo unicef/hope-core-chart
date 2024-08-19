@@ -99,8 +99,8 @@ backend:
   replicaCount: 2
 
   image:
-    repository: unicef/hope
-    tag: core-2.7.0
+    repository: unicef/hope-support-images
+    tag: core-ceedf480d7a1e21574245ce22c3dd82cd574d834
 
   podAnnotations: {}
   podLabels: {}
@@ -226,15 +226,11 @@ redis:
 
 elasticsearch:
   enabled: true
-  master:
-    replicas: 1
-  data:
-    replicas: 1
-  coordinating:
-    replicas: 1
-  sysctlImage:
-    replicas: 1
   plugins: "analysis-phonetic,analysis-icu"
+  master:
+    replicaCount: 1
+  coordinating:
+    replicaCount: 1
 
 keyvault:
   enabled: false

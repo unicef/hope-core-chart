@@ -21,6 +21,24 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: init-check-database
+          image: postgres:15-alpine
+          command: ["sh", "-c"]
+          args:
+            - |
+              DB_HOST=$(echo $DATABASE_URL | sed -e "s|.*://[^@]*@||" -e "s|:.*||");
+              DB_PORT=$(echo $DATABASE_URL | sed -n "s|.*:\([0-9]\+\)/.*|\1|p");
+              until pg_isready -h $DB_HOST -p $DB_PORT; do
+                echo "waiting for database at $DB_HOST:$DB_PORT";
+                sleep 1;
+              done
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "core.fullname" . }}-backend
+                  key: DATABASE_URL
       containers:
         - name: {{ .Chart.Name }}-backend-release
           command: ["/bin/sh"]
@@ -39,6 +57,11 @@ spec:
             mountPath: {{ .Values.keyvault.mountPath }}
             readOnly: true
           {{- end }}
+          {{- if .Values.nginx.enabled }}
+          - name: statics
+            mountPath: /data/staticserve
+            readOnly: false
+          {{- end }}
       restartPolicy: Never
       volumes:
       {{- if .Values.keyvault.enabled }}
@@ -48,6 +71,10 @@ spec:
           readOnly: true
           volumeAttributes:
             secretProviderClass: {{ include "core.fullname" . }}-secret-provider
+      {{- end }}
+      {{- if .Values.nginx.enabled }}
+      - name: statics
+        emptyDir: {}
       {{- end }}
   backoffLimit: 3
 ---
