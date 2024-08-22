@@ -32,6 +32,10 @@ spec:
       serviceAccountName: {{ include "core.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.backend.podSecurityContext | nindent 8 }}
+      initContainers:
+      {{- include "core.initContainers" . | nindent 6 }}
+      volumes:
+      {{- include "core.scriptVolume" . | nindent 6 }}
       containers:
         - name: {{ .Chart.Name }}-celery-worker-low-priority
           args:

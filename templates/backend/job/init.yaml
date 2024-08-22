@@ -22,9 +22,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "core.serviceAccountName" . }}
+      initContainers:
+      {{- include "core.initContainers" . | nindent 6 }}
       containers:
         - name: {{ .Chart.Name }}-backend-init
-          command: ["python", "manage.py", "createsuperuser", "--no-input", "--email", "{{ .Values.backend.admin.email }}"]
+          command: ["sh", "-c", "python3 manage.py createsuperuser --no-input --email {{ .Values.backend.admin.email }} || true"]
           env:
           - name: DJANGO_SUPERUSER_USERNAME
             value: {{ .Values.backend.admin.username | quote }}
@@ -54,5 +56,6 @@ spec:
           volumeAttributes:
             secretProviderClass: {{ include "core.fullname" . }}-secret-provider
       {{- end }}
-  backoffLimit: 3
+      {{- include "core.scriptVolume" . | nindent 6 }}
+  backoffLimit: 1
 {{- end -}}

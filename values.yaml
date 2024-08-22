@@ -34,6 +34,8 @@ celery:
     enabled: true
 
 flower:
+  enabled: false
+
   image: saxix/flower:1.6
   replicaCount: 1
   podAnnotations: {}
@@ -80,6 +82,9 @@ backend:
     preUpgrade:
       command: python3 manage.py upgrade
 
+  # it's recommended to not store secrets in the helm values file
+  # but rather in a secret store like Azure Key Vault
+  # so the below can be commented-out and keyvault.enabled set to true
   secret:
     SECRET_KEY: change-me
 
@@ -99,8 +104,8 @@ backend:
   replicaCount: 2
 
   image:
-    repository: unicef/hope-support-images
-    tag: core-ceedf480d7a1e21574245ce22c3dd82cd574d834
+    repository: unicef/hope
+    tag: core-2.10.1
 
   podAnnotations: {}
   podLabels: {}
@@ -236,3 +241,6 @@ keyvault:
   enabled: false
   envMappings: []
   mountPath: /mnt/secrets
+
+  # tenantId:
+  # userAssignedIdentityID:

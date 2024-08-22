@@ -30,6 +30,11 @@ spec:
       serviceAccountName: {{ include "core.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.backend.podSecurityContext | nindent 8 }}
+      # FIXME: beat will crash if db is available but migrations are not done
+      initContainers:
+      {{- include "core.initContainers" . | nindent 6 }}
+      volumes:
+      {{- include "core.scriptVolume" . | nindent 6 }}
       containers:
         - name: {{ .Chart.Name }}-celery-beat
           args:

@@ -81,3 +81,61 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "core.scriptVolume" -}}
+- name: script-volume
+  configMap:
+    name: {{ include "core.fullname" . }}-scripts
+    items:
+      - key: check.sh
+        path: check.sh
+{{- end -}}
+
+{{- define "core.initContainers" -}}
+- name: init
+  image: postgres:15-alpine
+  command: ["sh", "/scripts/check.sh"]
+  volumeMounts:
+    - name: script-volume
+      mountPath: /scripts/check.sh
+      subPath: check.sh
+  env:
+    {{- if .Values.postgresql.enabled }}
+    - name: DATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "core.fullname" . }}-backend
+          key: DATABASE_URL
+    {{- else if not .Values.keyvault.enabled -}}
+    - name: DATABASE_URL
+      value: {{ .Values.backend.databaseUrl | quote }}
+    {{- end }}
+
+    {{- if .Values.redis.enabled }}
+    - name: CELERY_BROKER_URL
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "core.fullname" . }}-backend
+          key: CELERY_BROKER_URL
+    {{- else if not .Values.keyvault.enabled -}}
+    - name: CELERY_BROKER_URL
+      value: {{ .Values.backend.celeryBrokerUrl | quote }}
+    {{- end }}
+
+    {{- if .Values.elasticsearch.enabled }}
+    - name: ELASTICSEARCH_HOST
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "core.fullname" . }}-backend
+          key: ELASTICSEARCH_HOST
+    {{- else if not .Values.keyvault.enabled -}}
+    - name: ELASTICSEARCH_HOST
+      value: {{ .Values.backend.elasticsearchHost | quote }}
+    {{- end }}
+
+    {{- if .Values.keyvault.enabled }}
+    - name: {{ include "core.fullname" . }}-keyvault
+      mountPath: {{ .Values.keyvault.mountPath }}
+      readOnly: true
+    {{- end }}
+{{- end -}}
