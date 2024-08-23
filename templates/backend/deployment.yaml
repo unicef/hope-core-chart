@@ -48,7 +48,7 @@ spec:
           envFrom:
           {{- include "core.backend.envConfig" . | nindent 10 }}
       {{- end }}
-      {{- include "core.initContainers" . | nindent 8 }}
+      {{- include "core.checkingContainer" . | nindent 8 }}
       containers:
         {{- if .Values.nginx.enabled }}
         - name: nginx

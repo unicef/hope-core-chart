@@ -22,7 +22,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       initContainers:
-      {{- include "core.initContainers" . | nindent 6 }}
+      {{- include "core.checkingContainer" . | nindent 6 }}
       containers:
         - name: {{ .Chart.Name }}-backend-release
           command: ["/bin/sh"]

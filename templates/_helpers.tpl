@@ -91,14 +91,18 @@ Create the name of the service account to use
         path: check.sh
 {{- end -}}
 
-{{- define "core.initContainers" -}}
+{{- define "core.scriptVolumeMount" -}}
+- name: script-volume
+  mountPath: /scripts/check.sh
+  subPath: check.sh
+{{- end -}}
+
+{{- define "core.checkingContainer" -}}
 - name: init
   image: postgres:15-alpine
   command: ["sh", "/scripts/check.sh"]
   volumeMounts:
-    - name: script-volume
-      mountPath: /scripts/check.sh
-      subPath: check.sh
+  {{- include "core.scriptVolumeMount" . | nindent 4 }}
   env:
     {{- if .Values.postgresql.enabled }}
     - name: DATABASE_URL

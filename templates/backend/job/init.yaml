@@ -23,7 +23,7 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "core.serviceAccountName" . }}
       initContainers:
-      {{- include "core.initContainers" . | nindent 6 }}
+      {{- include "core.checkingContainer" . | nindent 6 }}
       containers:
         - name: {{ .Chart.Name }}-backend-init
           command:

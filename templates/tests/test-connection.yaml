@@ -1,19 +1,46 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "core.fullname" . }}-test-connection"
+  name: "{{ include "core.fullname" . }}-test-connections"
   labels:
     {{- include "core.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
 spec:
   containers:
-    - name: curl
-      image: curlimages/curl
-      command: ['curl']
-      args: [
-        '--fail',
-        '-H Host: kubernetes.internal',
-        '{{ include "core.fullname" . }}:{{ .Values.backend.service.port }}/api/_health',  
-      ]
+  {{- include "core.checkingContainer" . | nindent 4 }}
+  volumes:
+    {{- include "core.scriptVolume" . | nindent 4 }}
+  restartPolicy: Never
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "core.fullname" . }}-test-backend"
+  labels:
+    {{- include "core.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+  - name: test-backend
+    image: "alpine/curl"
+    command: ["/bin/sh"]
+    args:
+      - -c
+      - |
+{{- if .Values.nginx.enabled }}
+        url="http://{{ include "core.fullname" . }}-nginx:{{ .Values.nginx.service.port }}/api/_health/"
+{{- else }}
+        url="http://{{ include "core.fullname" . }}-backend:{{ .Values.backend.service.port }}/api/_health/"
+{{- end }}
+        for i in {1..10}; do
+          if [ $(curl -s -o /dev/null -w ''%{http_code}'' $url) -eq 200 ]; then
+            exit 0
+          fi
+          sleep 1
+        done
+        exit 1
   restartPolicy: Never
