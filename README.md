@@ -10,8 +10,7 @@ To install the chart, you can use the following command:
 helm install hope-core https://unicef.github.io/hope-core-chart -f values.yaml --timeout 10m0s
 ```
 
-Timeout is set to 10m because 5m (default) can be not enough in a default setup - tested in AKS cluster.
-
+You should set the timeout to 10m because 5m (default) can be not enough in a default setup - tested in AKS cluster.
 You can port-forward the service to access it locally:
 
 ```bash
@@ -73,9 +72,8 @@ If you want to expose your service to the internet (e.g. with Azure Application 
 ingress:
   enabled: true
   host: your.domain.com
-
+  className: azure-application-gateway
   annotations:
-    kubernetes.io/ingress.class: azure/application-gateway
     appgw.ingress.kubernetes.io/ssl-redirect: "true"
     appgw.ingress.kubernetes.io/appgw-ssl-certificate: name-of-your-cert
 
