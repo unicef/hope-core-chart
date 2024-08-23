@@ -17,3 +17,4 @@ spec:
       protocol: TCP
   selector:
     {{- include "core.selectorLabels" . | nindent 4 }}
+    core/service: backend

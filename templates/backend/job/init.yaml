@@ -26,7 +26,14 @@ spec:
       {{- include "core.initContainers" . | nindent 6 }}
       containers:
         - name: {{ .Chart.Name }}-backend-init
-          command: ["sh", "-c", "python3 manage.py createsuperuser --no-input --email {{ .Values.backend.admin.email }} || true"]
+          command:
+          - sh
+          - -c
+          - |
+            python3 manage.py createsuperuser --no-input --email {{ .Values.backend.admin.email }} || true ; \
+            python3 manage.py loadcountries ; \
+            python3 manage.py loadcountrycodes ; \
+            echo Success!
           env:
           - name: DJANGO_SUPERUSER_USERNAME
             value: {{ .Values.backend.admin.username | quote }}

@@ -109,6 +109,12 @@ Create the name of the service account to use
     {{- else if not .Values.keyvault.enabled -}}
     - name: DATABASE_URL
       value: {{ .Values.backend.databaseUrl | quote }}
+    {{- else }}
+    - name: DATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "core.fullname" . }}-keyvault
+          key: DATABASE_URL
     {{- end }}
 
     {{- if .Values.redis.enabled }}
@@ -120,6 +126,12 @@ Create the name of the service account to use
     {{- else if not .Values.keyvault.enabled -}}
     - name: CELERY_BROKER_URL
       value: {{ .Values.backend.celeryBrokerUrl | quote }}
+    {{- else }}
+    - name: CELERY_BROKER_URL
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "core.fullname" . }}-keyvault
+          key: CELERY_BROKER_URL
     {{- end }}
 
     {{- if .Values.elasticsearch.enabled }}
@@ -131,11 +143,11 @@ Create the name of the service account to use
     {{- else if not .Values.keyvault.enabled -}}
     - name: ELASTICSEARCH_HOST
       value: {{ .Values.backend.elasticsearchHost | quote }}
-    {{- end }}
-
-    {{- if .Values.keyvault.enabled }}
-    - name: {{ include "core.fullname" . }}-keyvault
-      mountPath: {{ .Values.keyvault.mountPath }}
-      readOnly: true
+    {{- else }}
+    - name: ELASTICSEARCH_HOST
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "core.fullname" . }}-keyvault
+          key: ELASTICSEARCH_HOST
     {{- end }}
 {{- end -}}

@@ -10,7 +10,17 @@ To install the chart, you can use the following command:
 helm install hope-core https://unicef.github.io/hope-core-chart -f values.yaml --timeout 10m0s
 ```
 
-Timeout is set to 10m because 5m (default) is not enough in a default setup - tested in AKS cluster.
+Timeout is set to 10m because 5m (default) can be not enough in a default setup - tested in AKS cluster.
+
+You can port-forward the service to access it locally:
+
+```bash
+kubectl port-forward svc/core-backend 8000:80
+```
+
+And visit [http://localhost:8000](http://localhost:8000) to see the service.
+
+From that point, you'll need to create the BusinessArea via admin (`/api/unicorn`), assign the role (e.g. with all permissions) to the user and visit the home page.
 
 ## Configuration
 

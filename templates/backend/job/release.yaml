@@ -1,5 +1,3 @@
-# if keyvault.enabled, secret should be {{ include "core.fullname" . }}-keyvault
-# else, {{ include "core.fullname" . }}-backend
 apiVersion: batch/v1
 kind: Job
 metadata:
