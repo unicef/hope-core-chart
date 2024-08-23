@@ -6,26 +6,6 @@ metadata:
   labels:
     {{- include "core.labels" . | nindent 4 }}
 data:
-{{- if .Values.redis.enabled }}
-  FLOWER_BROKER_API: {{ printf
-    "redis://%s:%d/%d"
-    "hope-core-redis-master"
-    6379
-    0
-  }}
-  FLOWER_BROKER: {{ printf
-    "redis://%s:%d/%d"
-    "hope-core-redis-master"
-    6379
-    0
-  }}
-  CELERY_BROKER_URL: {{ printf
-    "redis://%s:%d/%d"
-    "hope-core-redis-master"
-    6379
-    0
-  }}
-{{- end }}
 {{- range $key, $value :=  .Values.flower.config }}
   {{ if eq $value "" }}
   {{ else }}
