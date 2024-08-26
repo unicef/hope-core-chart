@@ -3,7 +3,30 @@ entries:
   core:
   - apiVersion: v2
     appVersion: "2.10"
-    created: "2024-08-23T11:41:07.29091+02:00"
+    created: "2024-08-26T18:46:07.869014+02:00"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 14.x.x
+    - condition: redis.enabled
+      name: redis
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 18.x.x
+    - condition: elasticsearch.enabled
+      name: elasticsearch
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 21.x.x
+    description: A Helm chart for Kubernetes
+    digest: fa41b38af4399d872bcf2d4aa6c3bd44922024e29427a40c3f39864af8187829
+    name: core
+    type: application
+    urls:
+    - https://unicef.github.io/hope-core-chart/core-0.0.18.tgz
+    version: 0.0.18
+  - apiVersion: v2
+    appVersion: "2.10"
+    created: "2024-08-26T18:46:07.854999+02:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -26,7 +49,7 @@ entries:
     version: 0.0.17
   - apiVersion: v2
     appVersion: "2.10"
-    created: "2024-08-23T11:41:07.279705+02:00"
+    created: "2024-08-26T18:46:07.840024+02:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -49,7 +72,7 @@ entries:
     version: 0.0.16
   - apiVersion: v2
     appVersion: "2.10"
-    created: "2024-08-23T11:41:07.267652+02:00"
+    created: "2024-08-26T18:46:07.825471+02:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -72,7 +95,7 @@ entries:
     version: 0.0.15
   - apiVersion: v2
     appVersion: "2.10"
-    created: "2024-08-23T11:41:07.255908+02:00"
+    created: "2024-08-26T18:46:07.81035+02:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -95,7 +118,7 @@ entries:
     version: 0.0.14
   - apiVersion: v2
     appVersion: "2.8"
-    created: "2024-08-23T11:41:07.24379+02:00"
+    created: "2024-08-26T18:46:07.794746+02:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -117,7 +140,7 @@ entries:
     version: 0.0.12
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-08-23T11:41:07.235143+02:00"
+    created: "2024-08-26T18:46:07.783719+02:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -140,7 +163,7 @@ entries:
     version: 0.0.11
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-08-23T11:41:07.223223+02:00"
+    created: "2024-08-26T18:46:07.768628+02:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -163,7 +186,7 @@ entries:
     version: 0.0.10
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-08-23T11:41:07.371955+02:00"
+    created: "2024-08-26T18:46:07.968962+02:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -186,7 +209,7 @@ entries:
     version: 0.0.9
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-08-23T11:41:07.359583+02:00"
+    created: "2024-08-26T18:46:07.954083+02:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -209,7 +232,7 @@ entries:
     version: 0.0.8
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-08-23T11:41:07.348359+02:00"
+    created: "2024-08-26T18:46:07.939826+02:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -232,7 +255,7 @@ entries:
     version: 0.0.7
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-08-23T11:41:07.336321+02:00"
+    created: "2024-08-26T18:46:07.92541+02:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -255,7 +278,7 @@ entries:
     version: 0.0.6
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-08-23T11:41:07.324446+02:00"
+    created: "2024-08-26T18:46:07.910419+02:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -278,7 +301,7 @@ entries:
     version: 0.0.5
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-08-23T11:41:07.310066+02:00"
+    created: "2024-08-26T18:46:07.892151+02:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -301,7 +324,7 @@ entries:
     version: 0.0.4
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-08-23T11:41:07.297657+02:00"
+    created: "2024-08-26T18:46:07.877123+02:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -318,4 +341,4 @@ entries:
     urls:
     - https://unicef.github.io/hope-core-chart/core-0.0.3.tgz
     version: 0.0.3
-generated: "2024-08-23T11:41:07.210341+02:00"
+generated: "2024-08-26T18:46:07.752713+02:00"
