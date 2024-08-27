@@ -14,7 +14,7 @@ retry() {
   until [ "$n" -ge "$max" ]
   do
     eval "$cmd" && break || {
-      echo "Attempt $n/$max failed. Retrying in $interval seconds..."
+      echo "Attempt $n/$max to call '$cmd' failed. Retrying in $interval seconds..."
       n=$((n+1))
       sleep $interval
     }
