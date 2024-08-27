@@ -26,17 +26,20 @@ retry() {
   fi
 }
 
-DB_HOST=$(echo $DATABASE_URL | sed -e "s|.*://[^@]*@||" -e "s|:.*||")
+# Extract DB_HOST and DB_PORT handling possible @ in the password
+DB_HOST=$(echo $DATABASE_URL | rev | sed -e "s|@.*||" | rev | sed -e "s|.*://||" -e "s|:.*||")
 DB_PORT=$(echo $DATABASE_URL | sed -n "s|.*:\([0-9]\+\)/.*|\1|p")
 
 retry $MAX_RETRIES $RETRY_INTERVAL "pg_isready -h $DB_HOST -p $DB_PORT"
 
-REDIS_HOST=$(echo $CELERY_BROKER_URL | sed -e "s|.*://||" -e "s|:.*||")
+# Extract REDIS_HOST and REDIS_PORT handling possible @ in the password
+REDIS_HOST=$(echo $CELERY_BROKER_URL | rev | sed -e "s|@.*||" | rev | sed -e "s|.*://||" -e "s|:.*||")
 REDIS_PORT=$(echo $CELERY_BROKER_URL | sed -n "s|.*:\([0-9]\+\)/.*|\1|p")
 
 retry $MAX_RETRIES $RETRY_INTERVAL "nc -zv $REDIS_HOST $REDIS_PORT"
 
-ES_HOST=$(echo $ELASTICSEARCH_HOST | sed -e "s|.*://||" -e "s|:.*||")
+# Extract ES_HOST and ES_PORT handling possible @ in the password
+ES_HOST=$(echo $ELASTICSEARCH_HOST | rev | sed -e "s|@.*||" | rev | sed -e "s|.*://||" -e "s|:.*||")
 ES_PORT=$(echo $ELASTICSEARCH_HOST | sed -n "s|.*:\([0-9]\+\)\(/.*\)\?$|\1|p")
 
 retry $MAX_RETRIES $RETRY_INTERVAL "nc -zv $ES_HOST $ES_PORT"

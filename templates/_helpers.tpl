@@ -127,15 +127,54 @@ Create the name of the service account to use
         secretKeyRef:
           name: {{ include "core.fullname" . }}-backend
           key: CELERY_BROKER_URL
+    - name: CELERY_RESULT_BACKEND
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "core.fullname" . }}-backend
+          key: CELERY_RESULT_BACKEND
+    - name: CACHE_LOCATION
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "core.fullname" . }}-backend
+          key: CACHE_LOCATION
+    - name: CONSTANCE_REDIS_CONNECTION
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "core.fullname" . }}-backend
+          key: CONSTANCE_REDIS_CONNECTION
     {{- else if not .Values.keyvault.enabled -}}
     - name: CELERY_BROKER_URL
       value: {{ .Values.backend.celeryBrokerUrl | quote }}
+    - name: CELERY_RESULT_BACKEND
+      value: {{ .Values.backend.celeryResultBackend | quote }}
+    - name: CACHE_LOCATION
+      value: {{ .Values.backend.cacheLocation | quote }}
+    - name: CONSTANCE_REDIS_CONNECTION
+      value: {{ .Values.backend.constanceRedisConnection | quote }}
     {{- else }}
     - name: CELERY_BROKER_URL
       valueFrom:
         secretKeyRef:
           name: {{ include "core.fullname" . }}-keyvault
           key: CELERY_BROKER_URL
+    - name: CELERY_RESULT_BACKEND
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "core.fullname" . }}-keyvault
+          key: CELERY_RESULT_BACKEND
+    - name: CACHE_LOCATION
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "core.fullname" . }}-keyvault
+          key: CACHE_LOCATION
+    - name: CONSTANCE_REDIS_CONNECTION
+      valueFrom:
+        secretKeyRef:
+          name: {{ include "core.fullname" . }}-keyvault
+          key: CONSTANCE_REDIS_CONNECTION
+    {{- end }}
+
+    {{- if .Values.keyvault.enabled }}
     {{- end }}
 
     {{- if .Values.elasticsearch.enabled }}
