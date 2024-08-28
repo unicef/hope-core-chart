@@ -1,0 +1,23 @@
+name: Helm chart lint and snapshot test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-helm-chart:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4.2.0
+
+      - name: Run helm lint
+        run: helm lint ./
